@@ -1,0 +1,840 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BONO Bolsa Millonaria Bvc — Checkpoints</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#101b2d;
+  --ink-2:#182848;
+  --paper:#f6f2e7;
+  --paper-2:#efe8d6;
+  --gold:#c69a3a;
+  --gold-2:#e0b656;
+  --green:#3f7a5e;
+  --clay:#b4533f;
+  --slate:#5b6b7c;
+  --line: rgba(16,27,45,0.14);
+  --radius: 4px;
+}
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{
+  background:var(--paper);
+  background-image:
+    linear-gradient(var(--line) 1px, transparent 1px);
+  background-size: 100% 42px;
+  color:var(--ink);
+  font-family:'Inter',sans-serif;
+  min-height:100vh;
+}
+.wrap{max-width:880px;margin:0 auto;padding:0 20px 80px;}
+
+/* ---- header / masthead ---- */
+.masthead{
+  border-bottom:3px solid var(--ink);
+  padding:34px 0 18px;
+  margin-bottom:6px;
+}
+.masthead .eyebrow{
+  font-family:'IBM Plex Mono',monospace;
+  font-size:11px;
+  letter-spacing:.14em;
+  text-transform:uppercase;
+  color:var(--slate);
+  display:flex;
+  justify-content:space-between;
+  margin-bottom:14px;
+}
+.masthead h1{
+  font-family:'Fraunces',serif;
+  font-weight:700;
+  font-size:clamp(34px,6vw,54px);
+  line-height:1.02;
+  margin:0 0 8px;
+  letter-spacing:-.01em;
+}
+.masthead h1 em{
+  font-style:italic;
+  font-weight:400;
+  color:var(--gold);
+}
+.masthead p.sub{
+  font-size:15px;
+  color:var(--slate);
+  max-width:560px;
+  line-height:1.55;
+  margin:0;
+}
+.ticker{
+  font-family:'IBM Plex Mono',monospace;
+  font-size:12px;
+  color:var(--ink);
+  border-top:1px solid var(--line);
+  border-bottom:1px solid var(--line);
+  padding:8px 0;
+  margin:16px 0 30px;
+  display:flex;
+  gap:28px;
+  overflow-x:auto;
+  white-space:nowrap;
+}
+.ticker span b{color:var(--gold);}
+
+/* ---- identity card ---- */
+.card{
+  background:#fff;
+  border:1px solid var(--line);
+  border-radius:var(--radius);
+  padding:26px 28px;
+  margin-bottom:26px;
+  box-shadow:0 1px 0 rgba(16,27,45,0.03);
+}
+.id-card{
+  background:var(--ink);
+  color:var(--paper);
+  border:none;
+}
+.id-card h2{
+  font-family:'Fraunces',serif;
+  font-weight:600;
+  font-size:20px;
+  margin:0 0 4px;
+}
+.id-card p{
+  color:#b9c2d4;
+  font-size:13.5px;
+  margin:0 0 18px;
+  line-height:1.5;
+}
+.field-row{display:flex;gap:14px;flex-wrap:wrap;}
+.field{flex:1;min-width:200px;}
+.field label{
+  display:block;
+  font-family:'IBM Plex Mono',monospace;
+  font-size:10.5px;
+  letter-spacing:.08em;
+  text-transform:uppercase;
+  color:#8fa0bc;
+  margin-bottom:6px;
+}
+.field input{
+  width:100%;
+  background:rgba(255,255,255,0.06);
+  border:1px solid rgba(255,255,255,0.22);
+  color:#fff;
+  border-radius:3px;
+  padding:11px 12px;
+  font-size:14.5px;
+  font-family:'Inter',sans-serif;
+}
+.field input::placeholder{color:#6d7b93;}
+.field input:focus{outline:2px solid var(--gold-2);outline-offset:1px;}
+
+.btn{
+  appearance:none;border:none;cursor:pointer;
+  font-family:'Inter',sans-serif;font-weight:600;font-size:13.5px;
+  padding:11px 20px;border-radius:3px;
+  transition:transform .12s ease, opacity .12s ease;
+}
+.btn:active{transform:scale(.98);}
+.btn-gold{background:var(--gold-2);color:var(--ink);}
+.btn-gold:hover{background:#eec46a;}
+.btn-outline{background:transparent;border:1.4px solid var(--ink);color:var(--ink);}
+.btn-outline:hover{background:var(--ink);color:var(--paper);}
+.btn-outline-light{background:transparent;border:1.4px solid rgba(255,255,255,0.5);color:#fff;}
+.btn-outline-light:hover{border-color:#fff;}
+.btn:disabled{opacity:.45;cursor:not-allowed;}
+.btn-row{margin-top:18px;display:flex;gap:10px;align-items:center;flex-wrap:wrap;}
+.status-line{font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--gold-2);}
+
+/* ---- checkpoint cards ---- */
+.cp-list{display:flex;flex-direction:column;gap:16px;}
+.cp{
+  background:#fff;border:1px solid var(--line);border-radius:var(--radius);
+  padding:0; overflow:hidden; position:relative;
+}
+.cp.locked{opacity:.55;}
+.cp-head{
+  display:flex;align-items:flex-start;gap:16px;
+  padding:22px 24px 16px;
+}
+.cp-num{
+  font-family:'Fraunces',serif;font-weight:700;font-size:34px;
+  color:var(--paper-2);
+  -webkit-text-stroke:1.4px var(--ink);
+  line-height:1;flex-shrink:0;width:44px;
+}
+.cp-titlewrap{flex:1;min-width:0;}
+.cp-titlewrap h3{
+  font-family:'Fraunces',serif;font-size:19px;font-weight:600;margin:0 0 5px;
+}
+.cp-desc{font-size:13.6px;color:var(--slate);line-height:1.55;margin:0 0 8px;}
+.cp-meta{
+  font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--ink);
+  display:flex;gap:16px;flex-wrap:wrap;
+}
+.cp-meta .dl{color:var(--clay);}
+.cp-meta .dl b{font-weight:600;}
+.badge{
+  font-family:'IBM Plex Mono',monospace;font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;
+  padding:4px 9px;border-radius:20px;white-space:nowrap;flex-shrink:0;
+}
+.badge.pending{background:#efe8d6;color:#8a7433;}
+.badge.progress{background:#fdeecb;color:#93610c;}
+.badge.done{background:#e4efe8;color:var(--green);}
+.badge.off{background:#eee;color:#999;}
+
+.cp-body{padding:0 24px 22px;border-top:1px dashed var(--line);margin-top:2px;padding-top:16px;}
+.cp-body textarea{
+  width:100%;min-height:64px;border:1px solid var(--line);border-radius:3px;
+  padding:10px 12px;font-family:'Inter',sans-serif;font-size:13.5px;resize:vertical;margin-bottom:10px;
+}
+.file-drop{
+  border:1.6px dashed var(--line);border-radius:3px;padding:16px;text-align:center;
+  font-size:12.8px;color:var(--slate);cursor:pointer;margin-bottom:10px;display:block;
+  transition:border-color .15s ease, background .15s ease;
+}
+.file-drop:hover{border-color:var(--gold);background:#fbf7ee;}
+.file-drop input{display:none;}
+.evidence-preview{display:flex;align-items:center;gap:12px;margin-top:10px;}
+.evidence-preview img{width:64px;height:64px;object-fit:cover;border-radius:3px;border:1px solid var(--line);}
+.evidence-preview .meta{font-family:'IBM Plex Mono',monospace;font-size:11.5px;color:var(--green);}
+.evidence-preview a{color:var(--green);text-decoration:none;font-family:'IBM Plex Mono',monospace;font-size:12px;}
+.evidence-preview a:hover{text-decoration:underline;}
+
+/* stamp */
+.stamp{
+  position:absolute;top:14px;right:20px;
+  border:2.2px solid var(--green);color:var(--green);
+  font-family:'IBM Plex Mono',monospace;font-weight:600;font-size:11px;letter-spacing:.08em;
+  padding:5px 10px;border-radius:3px;transform:rotate(6deg);
+  text-transform:uppercase;opacity:.9;
+}
+
+.small-note{font-size:11.8px;color:var(--slate);margin-top:6px;}
+.hint{font-size:12.3px;color:var(--slate);font-style:italic;}
+
+/* bonuses */
+.bonus-list{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:10px;}
+.bonus-list li{
+  display:flex;gap:12px;align-items:baseline;font-size:13.8px;line-height:1.5;
+  padding-bottom:10px;border-bottom:1px dotted var(--line);
+}
+.bonus-list li:last-child{border-bottom:none;padding-bottom:0;}
+.bonus-list .tag{
+  font-family:'IBM Plex Mono',monospace;font-size:11px;background:var(--ink);color:var(--gold-2);
+  padding:2px 7px;border-radius:3px;flex-shrink:0;
+}
+
+footer{
+  margin-top:40px;padding-top:18px;border-top:1px solid var(--line);
+  display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;
+}
+footer a{font-family:'IBM Plex Mono',monospace;font-size:11.5px;color:var(--slate);text-decoration:none;cursor:pointer;}
+footer a:hover{color:var(--ink);text-decoration:underline;}
+
+/* ---- admin ---- */
+#adminView{display:none;}
+.admin-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:22px;flex-wrap:wrap;gap:10px;}
+.admin-header h2{font-family:'Fraunces',serif;font-size:26px;margin:0;}
+.cp-edit{border:1px solid var(--line);border-radius:var(--radius);padding:18px 20px;margin-bottom:14px;background:#fff;}
+.cp-edit label{display:block;font-family:'IBM Plex Mono',monospace;font-size:10.5px;text-transform:uppercase;letter-spacing:.07em;color:var(--slate);margin:10px 0 5px;}
+.cp-edit input[type=text], .cp-edit textarea{
+  width:100%;border:1px solid var(--line);border-radius:3px;padding:9px 11px;font-family:'Inter',sans-serif;font-size:13.5px;
+}
+.cp-edit textarea{min-height:56px;resize:vertical;}
+.cp-edit .toggle-row{display:flex;align-items:center;gap:8px;margin-top:12px;}
+table.students{width:100%;border-collapse:collapse;font-size:12.6px;font-family:'IBM Plex Mono',monospace;}
+table.students th, table.students td{border-bottom:1px solid var(--line);padding:8px 8px;text-align:left;}
+table.students th{color:var(--slate);font-weight:500;text-transform:uppercase;font-size:10.5px;letter-spacing:.06em;}
+table.students a{color:var(--green);text-decoration:none;} table.students a:hover{text-decoration:underline;}
+.ok{color:var(--green);} .partial{color:#93610c;} .no{color:#c7c0a9;}
+.admin-tools{display:flex;gap:10px;margin:16px 0;flex-wrap:wrap;}
+.table-wrap{max-height:480px;overflow:auto;border:1px solid var(--line);border-radius:var(--radius);}
+.loading-txt{font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--slate);padding:14px 0;}
+.warn-box{background:#fdf3ec;border:1px solid #eccdb2;border-radius:3px;padding:12px 14px;font-size:12.6px;color:#8a4a24;line-height:1.5;margin-bottom:18px;}
+.warn-box.ok-box{background:#eaf3ee;border-color:#bfdccb;color:#2f5e46;}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- ============ STUDENT VIEW ============ -->
+  <div id="studentView">
+    <div class="masthead">
+      <div class="eyebrow"><span> Bolsa Millonaria Bvc</span><span id="clock"></span></div>
+      <h1>Bolsa Millonaria BVC <em>-Bono-</em></h1>
+      <p class="sub">Cuatro checkpoints marcan tu participación durante el concurso. Regístrate, revisa qué debes entregar en cada uno y sube tu evidencia antes de la fecha límite.</p>
+    </div>
+    <div class="ticker" id="tickerBar"></div>
+
+    <div id="connBanner" class="warn-box" style="display:none;"></div>
+
+    <div class="card id-card">
+      <h2>Identifícate</h2>
+      <p>Ingresa tu nombre completo y tu código universitario para acceder a tus checkpoints. Si ya te registraste antes, solo escribe tu código para continuar donde ibas.</p>
+      <div class="field-row">
+        <div class="field">
+          <label for="fNombre">Nombre completo</label>
+          <input id="fNombre" type="text" placeholder="Ej: María Camila Pérez Rojas" autocomplete="name">
+        </div>
+        <div class="field">
+          <label for="fCodigo">Código universitario</label>
+          <input id="fCodigo" type="text" placeholder="Ej: 000123456" autocomplete="off">
+        </div>
+      </div>
+      <div class="btn-row">
+        <button class="btn btn-gold" id="btnAccess" onclick="accessStudent()">Continuar →</button>
+        <span class="status-line" id="idStatus"></span>
+      </div>
+    </div>
+
+    <div id="cpSection" style="display:none;">
+      <div class="cp-list" id="cpList"></div>
+
+      <div class="card" id="bonusCard">
+        <h2 style="font-family:'Fraunces',serif;font-size:19px;margin:0 0 12px;">Bonificaciones</h2>
+        <ul class="bonus-list" id="bonusList"></ul>
+        <p class="hint" style="margin-top:12px;">El detalle final de cómo se calculan las bonificaciones se confirmará más adelante.</p>
+      </div>
+    </div>
+
+    <footer>
+      <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--slate);">Dinámica de los Bonos · Checkpoints</span>
+      <a onclick="openAdminGate()">Panel del profesor →</a>
+    </footer>
+  </div>
+
+  <!-- ============ ADMIN PASSWORD GATE ============ -->
+  <div id="adminGate" style="display:none;position:fixed;inset:0;background:rgba(16,27,45,0.72);z-index:50;align-items:center;justify-content:center;">
+    <div class="card" style="max-width:360px;width:90%;">
+      <h2 style="font-family:'Fraunces',serif;font-size:19px;margin:0 0 4px;">Panel del profesor</h2>
+      <p class="hint" style="margin:0 0 14px;">Ingresa la contraseña para continuar.</p>
+      <div class="field" style="margin-bottom:6px;">
+        <label for="adminPw" style="color:var(--slate);">Contraseña</label>
+        <input id="adminPw" type="password" placeholder="••••••••" style="width:100%;border:1px solid var(--line);border-radius:3px;padding:11px 12px;font-size:14.5px;font-family:'Inter',sans-serif;">
+      </div>
+      <p id="adminGateError" style="color:var(--clay);font-size:12.5px;min-height:16px;margin:6px 0 0;"></p>
+      <div class="btn-row">
+        <button class="btn btn-gold" onclick="checkAdminPassword()">Entrar</button>
+        <button class="btn btn-outline" onclick="closeAdminGate()">Cancelar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ ADMIN VIEW ============ -->
+  <div id="adminView">
+    <div class="admin-header">
+      <h2>Panel del profesor</h2>
+      <button class="btn btn-outline" onclick="closeAdmin()">← Volver a la vista de estudiante</button>
+    </div>
+
+    <div class="warn-box">
+      Este panel usa una contraseña simple guardada en el propio archivo — es solo una barrera básica, no una autenticación segura. No la uses para datos verdaderamente confidenciales.
+    </div>
+    <div class="warn-box" id="driveStatusBox"></div>
+
+    <div class="card">
+      <h2 style="font-family:'Fraunces',serif;font-size:19px;margin:0 0 4px;">Checkpoints</h2>
+      <p class="hint" style="margin:0 0 14px;">Edita título, descripción, fecha límite y si está habilitado para recibir entregas. Los cambios quedan guardados en tu Drive y se ven de inmediato para todos los estudiantes.</p>
+      <div id="cpEditList"></div>
+      <div class="card" style="margin-top:4px;">
+        <label style="display:block;font-family:'IBM Plex Mono',monospace;font-size:10.5px;text-transform:uppercase;letter-spacing:.07em;color:var(--slate);margin-bottom:6px;">Texto de bonificaciones</label>
+        <textarea id="bonusEdit" style="width:100%;min-height:110px;border:1px solid var(--line);border-radius:3px;padding:10px 12px;font-family:'Inter',sans-serif;font-size:13.5px;"></textarea>
+      </div>
+      <div class="btn-row">
+        <button class="btn btn-gold" onclick="saveConfig()">Guardar cambios</button>
+        <span class="status-line" id="cfgStatus" style="color:var(--green);"></span>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2 style="font-family:'Fraunces',serif;font-size:19px;margin:0 0 4px;">Estudiantes y entregas</h2>
+      <p class="hint" style="margin:0;">Trae el listado directo desde tu Google Sheet (una fila por estudiante).</p>
+      <div class="admin-tools">
+        <button class="btn btn-outline" onclick="loadStudents()">Cargar / actualizar listado</button>
+        <button class="btn btn-outline" onclick="exportCSV()">Descargar Excel (CSV)</button>
+        <a id="openSheetLink" href="#" target="_blank" class="btn btn-outline" style="display:none;text-decoration:none;">Abrir hoja en Drive ↗</a>
+      </div>
+      <div id="studentsLoading" class="loading-txt"></div>
+      <div class="table-wrap">
+        <table class="students" id="studentsTable" style="display:none;">
+          <thead><tr><th>Nombre</th><th>Código</th><th>CP1</th><th>CP2</th><th>CP3</th><th>CP4</th><th>Última actualización</th></tr></thead>
+          <tbody id="studentsBody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+</div>
+<script>
+/* ============ CONFIGURACIÓN ============ */
+// Debe ser IGUAL al ADMIN_TOKEN del archivo de Apps Script.
+const ADMIN_PASSWORD = "bonos2026";
+
+// Pega aquí la URL de tu Web App de Google Apps Script (termina en /exec).
+// Mientras diga "PEGA_AQUI_TU_URL...", la página no podrá guardar ni leer nada.
+const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzbJXbleLV1tAj5eahPw1cu-LEHtnHk6-fS0Qq5_v-ygeE_cP8Q6iC9vTbb-cFZZzDk/exec";
+
+const DEFAULT_CONFIG = {
+  checkpoints: [
+    { id:1, title:"Inscripción",
+      desc:"Demuestra que realizaste correctamente la inscripción y que tienes acceso a la plataforma del concurso.",
+      deadline:"4 de octubre", enabled:true },
+    { id:2, title:"Estrategia de inversión",
+      desc:"Entrega un informe corto sobre tu estrategia de inversión para el periodo de práctica. Más adelante se detallará exactamente qué debe contener.",
+      deadline:"Entre el 28 de septiembre y el 2 de octubre", enabled:true },
+    { id:3, title:"Segundo corte",
+      desc:"Entrega información sobre el estado de tu portafolio, tus posiciones y tu ubicación en la liga. Las instrucciones exactas se compartirán más adelante.",
+      deadline:"Por definir", enabled:true },
+    { id:4, title:"Informe final",
+      desc:"Informe corto sobre la evolución de tu portafolio y las decisiones que tomaste durante el concurso.",
+      deadline:"Por definir", enabled:true }
+  ],
+  bonusText:
+`Si completas todos los entregables y terminas con rendimiento negativo → 1 bono = 0,1 adicional en la nota final.
+Si completas todos los entregables y terminas con rendimiento positivo → 2 bonos = 0,2 adicionales en la nota final.
+Si completas todos los entregables y obtienes uno de los 3 mejores rendimientos → 3 bonos = 0,3 adicionales en la nota final.`
+};
+
+let CONFIG = null;
+let currentStudent = null;   // {nombre, codigo}
+let currentStatus = null;    // {cp1:{status,url,localPreview?}, cp2:..., cp3:..., cp4:...}
+let allStudentsCache = [];
+let apiReady = false;
+
+/* ============ Cliente del API (Apps Script) ============ */
+
+function scriptConfigured(){
+  return APPS_SCRIPT_URL && APPS_SCRIPT_URL.indexOf('PEGA_AQUI') !== 0;
+}
+
+async function apiGet(params){
+  if(!scriptConfigured()) throw new Error('APPS_SCRIPT_URL no configurada');
+  const qs = new URLSearchParams(params).toString();
+  const res = await fetch(`${APPS_SCRIPT_URL}?${qs}`, { method:'GET' });
+  const json = await res.json();
+  if(json.status !== 'ok') throw new Error(json.message || 'Error del servidor');
+  return json;
+}
+
+async function apiPost(payload){
+  if(!scriptConfigured()) throw new Error('APPS_SCRIPT_URL no configurada');
+  const res = await fetch(APPS_SCRIPT_URL, {
+    method: 'POST',
+    headers: { 'Content-Type': 'text/plain;charset=utf-8' }, // evita preflight CORS
+    body: JSON.stringify(payload)
+  });
+  const json = await res.json();
+  if(json.status !== 'ok') throw new Error(json.message || 'Error del servidor');
+  return json;
+}
+
+/* ============ Arranque ============ */
+
+function fmtClock(){
+  const d = new Date();
+  document.getElementById('clock').textContent = d.toLocaleDateString('es-CO', {day:'2-digit',month:'short',year:'numeric'}).toUpperCase();
+}
+fmtClock();
+
+async function loadConfigAndRender(){
+  const banner = document.getElementById('connBanner');
+  if(!scriptConfigured()){
+    CONFIG = DEFAULT_CONFIG;
+    banner.style.display = 'block';
+    banner.textContent = '⚠ Esta página todavía no está conectada a la base de datos (falta configurar APPS_SCRIPT_URL). Los datos que veas aquí son solo de ejemplo y nada se va a guardar. Contacta al profesor si ves este mensaje.';
+    document.getElementById('btnAccess').disabled = true;
+    renderTicker(); renderBonusList();
+    return;
+  }
+  try{
+    const r = await apiGet({action:'getConfig'});
+    CONFIG = r.config;
+    apiReady = true;
+    banner.style.display = 'none';
+  }catch(e){
+    CONFIG = DEFAULT_CONFIG;
+    banner.style.display = 'block';
+    banner.textContent = '⚠ No se pudo conectar con el servidor ahora mismo. Revisa tu conexión a internet y recarga la página. Si el problema sigue, avisa al profesor.';
+    document.getElementById('btnAccess').disabled = true;
+  }
+  renderTicker();
+  renderBonusList();
+}
+
+function renderTicker(){
+  const bar = document.getElementById('tickerBar');
+  bar.innerHTML = CONFIG.checkpoints.map(c =>
+    `<span>CP${c.id} · ${c.title} — <b>${c.deadline}</b></span>`
+  ).join('<span style="color:var(--line)">◆</span>');
+}
+
+function renderBonusList(){
+  const list = document.getElementById('bonusList');
+  const lines = CONFIG.bonusText.split('\n').filter(l => l.trim());
+  list.innerHTML = lines.map((l,i) => `<li><span class="tag">BONO ${i+1}</span><span>${escapeHtml(l)}</span></li>`).join('');
+}
+
+function escapeHtml(s){
+  const d = document.createElement('div'); d.textContent = s == null ? '' : s; return d.innerHTML;
+}
+
+/* ============ Flujo del estudiante ============ */
+
+async function accessStudent(){
+  const nombre = document.getElementById('fNombre').value.trim();
+  const codigo = document.getElementById('fCodigo').value.trim();
+  const statusEl = document.getElementById('idStatus');
+  if(!apiReady){ statusEl.textContent = 'La página no está conectada al servidor todavía.'; statusEl.style.color = 'var(--clay)'; return; }
+  if(!codigo){ statusEl.textContent = 'Escribe tu código universitario.'; statusEl.style.color = 'var(--clay)'; return; }
+
+  statusEl.textContent = 'Verificando...'; statusEl.style.color = 'var(--gold-2)';
+
+  let existing;
+  try{
+    existing = await apiGet({ action:'getStudent', codigo });
+  }catch(e){
+    statusEl.textContent = 'No se pudo conectar con el servidor. Intenta de nuevo.'; statusEl.style.color='var(--clay)'; return;
+  }
+
+  if(!existing.found && !nombre){
+    statusEl.textContent = 'Primera vez: escribe también tu nombre completo.'; statusEl.style.color='var(--clay)'; return;
+  }
+
+  statusEl.textContent = 'Guardando...'; statusEl.style.color = 'var(--gold-2)';
+  let reg;
+  try{
+    reg = await apiPost({ action:'register', nombre: nombre || existing.nombre, codigo });
+  }catch(e){
+    statusEl.textContent = 'No se pudo guardar. Revisa tu conexión e intenta de nuevo.'; statusEl.style.color='var(--clay)'; return;
+  }
+
+  currentStudent = { nombre: reg.nombre, codigo };
+  currentStatus = reg.data;
+  document.getElementById('fNombre').value = reg.nombre;
+  statusEl.textContent = `Bienvenido/a, ${String(reg.nombre).split(' ')[0]}.`; statusEl.style.color='var(--green)';
+  document.getElementById('cpSection').style.display = 'block';
+  renderCheckpoints();
+}
+
+function renderCheckpoints(){
+  const list = document.getElementById('cpList');
+  list.innerHTML = CONFIG.checkpoints.map(cp => renderCheckpointCard(cp, currentStatus['cp'+cp.id])).join('');
+  attachHandlers();
+}
+
+function statusBadge(cp, st){
+  if(!cp.enabled) return `<span class="badge off">Aún no habilitado</span>`;
+  if(!st || st.status === 'pending') return `<span class="badge pending">Pendiente</span>`;
+  if(st.status === 'partial') return `<span class="badge progress">Falta la captura</span>`;
+  return `<span class="badge done">Enviado</span>`;
+}
+
+function renderCheckpointCard(cp, st){
+  const locked = !cp.enabled;
+  st = st || { status:'pending', url:'' };
+  const isComplete = st.status === 'done';
+  let bodyHtml = '';
+
+  const evidenceBlock = (label) => `
+    <div class="evidence-preview">
+      ${st.localPreview ? `<img src="${st.localPreview}" alt="Evidencia">` : ''}
+      <div class="meta">Enviado ✓${st.url ? ` · <a href="${st.url}" target="_blank" rel="noopener">Ver archivo ↗</a>` : ''}</div>
+    </div>
+    <label class="file-drop" data-cp="${cp.id}" style="margin-top:10px;">
+      ${label}
+      <input type="file" accept="image/*" data-action="${cp.id === 1 ? 'upload-evidence' : 'upload-generic'}" data-cp="${cp.id}">
+    </label>`;
+
+  if(locked){
+    bodyHtml = `<p class="hint">Este checkpoint se habilitará más adelante. Vuelve a revisar antes de la fecha límite.</p>`;
+  } else if(cp.id === 1){
+    if(st.status === 'pending'){
+      bodyHtml = `<button class="btn btn-gold" data-action="send-inscripcion" data-cp="1">Enviar inscripción</button>`;
+    } else if(st.status === 'partial'){
+      bodyHtml = `
+        <p class="small-note" style="color:var(--green);">✓ Inscripción enviada. Ahora sube la captura donde se vea tu inscripción con tu nombre.</p>
+        <label class="file-drop" data-cp="1">
+          📎 Subir captura de pantalla
+          <input type="file" accept="image/*" data-action="upload-evidence" data-cp="1">
+        </label>`;
+    } else {
+      bodyHtml = evidenceBlock('Reemplazar captura');
+    }
+  } else {
+    if(st.status === 'pending'){
+      bodyHtml = `
+        <textarea placeholder="Comentario opcional para esta entrega..." data-comment="${cp.id}"></textarea>
+        <label class="file-drop" data-cp="${cp.id}">
+          📎 Adjuntar evidencia (imagen o captura)
+          <input type="file" accept="image/*" data-action="upload-generic" data-cp="${cp.id}">
+        </label>
+        <p class="hint">Adjunta primero el archivo; se enviará automáticamente.</p>`;
+    } else {
+      bodyHtml = evidenceBlock('Reemplazar entrega');
+    }
+  }
+
+  return `
+  <div class="cp ${locked ? 'locked' : ''}">
+    ${isComplete ? '<div class="stamp">Enviado ✓</div>' : ''}
+    <div class="cp-head">
+      <div class="cp-num">0${cp.id}</div>
+      <div class="cp-titlewrap">
+        <h3>${escapeHtml(cp.title)}</h3>
+        <p class="cp-desc">${escapeHtml(cp.desc)}</p>
+        <div class="cp-meta"><span class="dl">Fecha límite: <b>${escapeHtml(cp.deadline)}</b></span></div>
+      </div>
+      ${statusBadge(cp, st)}
+    </div>
+    <div class="cp-body">${bodyHtml}</div>
+  </div>`;
+}
+
+function attachHandlers(){
+  document.querySelectorAll('[data-action="send-inscripcion"]').forEach(btn=>{
+    btn.onclick = async ()=>{
+      btn.disabled = true; btn.textContent = 'Enviando...';
+      try{
+        const r = await apiPost({
+          action:'submit', nombre: currentStudent.nombre, codigo: currentStudent.codigo,
+          checkpoint: 1, imageData: null
+        });
+        currentStatus.cp1 = r.data.cp1;
+        renderCheckpoints();
+      }catch(e){
+        alert('No se pudo enviar la inscripción. Revisa tu conexión e intenta de nuevo.');
+        btn.disabled = false; btn.textContent = 'Enviar inscripción';
+      }
+    };
+  });
+  document.querySelectorAll('[data-action="upload-evidence"]').forEach(input=>{
+    input.onchange = (e)=> handleUpload(e, 1);
+  });
+  document.querySelectorAll('[data-action="upload-generic"]').forEach(input=>{
+    input.onchange = (e)=> handleUpload(e, parseInt(input.dataset.cp));
+  });
+}
+
+function compressImage(file){
+  return new Promise((resolve,reject)=>{
+    const reader = new FileReader();
+    reader.onload = (e)=>{
+      const img = new Image();
+      img.onload = ()=>{
+        const maxW = 900;
+        const scale = Math.min(1, maxW / img.width);
+        const canvas = document.createElement('canvas');
+        canvas.width = img.width * scale;
+        canvas.height = img.height * scale;
+        const ctx = canvas.getContext('2d');
+        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+        resolve(canvas.toDataURL('image/jpeg', 0.72));
+      };
+      img.onerror = reject;
+      img.src = e.target.result;
+    };
+    reader.onerror = reject;
+    reader.readAsDataURL(file);
+  });
+}
+
+async function handleUpload(e, cpId){
+  const file = e.target.files[0];
+  if(!file) return;
+  const label = e.target.closest('.file-drop');
+  const originalText = label.textContent;
+  label.textContent = 'Procesando imagen...';
+
+  let dataUrl;
+  try{
+    dataUrl = await compressImage(file);
+  }catch(err){
+    alert('No se pudo procesar la imagen. Intenta con otra.');
+    label.textContent = originalText;
+    return;
+  }
+
+  label.textContent = 'Enviando...';
+  const commentEl = document.querySelector(`[data-comment="${cpId}"]`);
+  const comment = commentEl ? commentEl.value.trim() : '';
+
+  try{
+    const r = await apiPost({
+      action:'submit', nombre: currentStudent.nombre, codigo: currentStudent.codigo,
+      checkpoint: cpId, imageData: dataUrl, comment
+    });
+    currentStatus['cp'+cpId] = { ...r.data['cp'+cpId], localPreview: dataUrl };
+    renderCheckpoints();
+  }catch(err){
+    alert('No se pudo enviar el archivo. Revisa tu conexión e intenta de nuevo.');
+    label.textContent = originalText;
+  }
+}
+
+/* ============ Panel del profesor ============ */
+
+function openAdminGate(){
+  document.getElementById('adminGate').style.display = 'flex';
+  document.getElementById('adminGateError').textContent = '';
+  const pwInput = document.getElementById('adminPw');
+  pwInput.value = '';
+  setTimeout(()=> pwInput.focus(), 50);
+  pwInput.onkeydown = (e)=>{ if(e.key === 'Enter') checkAdminPassword(); };
+}
+function closeAdminGate(){
+  document.getElementById('adminGate').style.display = 'none';
+}
+function checkAdminPassword(){
+  const pw = document.getElementById('adminPw').value;
+  if(pw !== ADMIN_PASSWORD){
+    document.getElementById('adminGateError').textContent = 'Contraseña incorrecta. Intenta de nuevo.';
+    return;
+  }
+  closeAdminGate();
+  document.getElementById('studentView').style.display = 'none';
+  document.getElementById('adminView').style.display = 'block';
+  renderAdminConfig();
+  const box = document.getElementById('driveStatusBox');
+  if(scriptConfigured()){
+    box.classList.add('ok-box');
+    box.textContent = '✓ Conectada a tu Google Sheet / Drive vía Apps Script. Cada envío queda guardado ahí en tiempo real.';
+  } else {
+    box.classList.remove('ok-box');
+    box.textContent = '⚠ Todavía NO está conectada. Pega la URL de tu Apps Script en la constante APPS_SCRIPT_URL del código (y verifica que ADMIN_TOKEN allá sea igual a ADMIN_PASSWORD aquí).';
+  }
+}
+function closeAdmin(){
+  document.getElementById('adminView').style.display = 'none';
+  document.getElementById('studentView').style.display = 'block';
+}
+
+function renderAdminConfig(){
+  const wrap = document.getElementById('cpEditList');
+  wrap.innerHTML = CONFIG.checkpoints.map(cp => `
+    <div class="cp-edit" data-cpid="${cp.id}">
+      <strong style="font-family:'Fraunces',serif;font-size:16px;">Checkpoint ${cp.id}</strong>
+      <label>Título</label>
+      <input type="text" class="cfg-title" value="${escapeHtml(cp.title)}">
+      <label>Descripción</label>
+      <textarea class="cfg-desc">${escapeHtml(cp.desc)}</textarea>
+      <label>Fecha límite (texto libre)</label>
+      <input type="text" class="cfg-deadline" value="${escapeHtml(cp.deadline)}">
+      <div class="toggle-row">
+        <input type="checkbox" class="cfg-enabled" id="en${cp.id}" ${cp.enabled ? 'checked' : ''}>
+        <label for="en${cp.id}" style="margin:0;text-transform:none;font-family:'Inter',sans-serif;font-size:13px;color:var(--ink);">Habilitado para recibir entregas</label>
+      </div>
+    </div>
+  `).join('');
+  document.getElementById('bonusEdit').value = CONFIG.bonusText;
+}
+
+async function saveConfig(){
+  const newCps = [];
+  document.querySelectorAll('.cp-edit').forEach(el=>{
+    newCps.push({
+      id: parseInt(el.dataset.cpid),
+      title: el.querySelector('.cfg-title').value.trim(),
+      desc: el.querySelector('.cfg-desc').value.trim(),
+      deadline: el.querySelector('.cfg-deadline').value.trim(),
+      enabled: el.querySelector('.cfg-enabled').checked
+    });
+  });
+  const newConfig = { checkpoints: newCps, bonusText: document.getElementById('bonusEdit').value };
+  const st = document.getElementById('cfgStatus');
+  st.textContent = 'Guardando...'; st.style.color = 'var(--gold-2)';
+  try{
+    await apiPost({ action:'saveConfig', token: ADMIN_PASSWORD, config: newConfig });
+    CONFIG = newConfig;
+    st.textContent = 'Guardado ✓'; st.style.color = 'var(--green)';
+    renderTicker(); renderBonusList();
+    setTimeout(()=> st.textContent = '', 2500);
+  }catch(e){
+    st.textContent = 'No se pudo guardar. Intenta de nuevo.'; st.style.color = 'var(--clay)';
+  }
+}
+
+async function loadStudents(){
+  const loadingEl = document.getElementById('studentsLoading');
+  const table = document.getElementById('studentsTable');
+  const body = document.getElementById('studentsBody');
+  const sheetLink = document.getElementById('openSheetLink');
+  table.style.display = 'none';
+  loadingEl.textContent = 'Cargando estudiantes desde tu Google Sheet...';
+
+  let r;
+  try{
+    r = await apiGet({ action:'listAll', token: ADMIN_PASSWORD });
+  }catch(e){
+    loadingEl.textContent = 'No se pudo cargar el listado. Revisa la conexión o la contraseña.';
+    return;
+  }
+
+  allStudentsCache = r.rows;
+  if(r.sheetUrl){
+    sheetLink.href = r.sheetUrl;
+    sheetLink.style.display = 'inline-block';
+  }
+  if(r.rows.length === 0){
+    loadingEl.textContent = 'Todavía no hay estudiantes registrados.';
+    return;
+  }
+
+  const statusClass = (s) => s === 'done' ? 'ok' : (s === 'partial' ? 'partial' : 'no');
+  const statusText = (st) => {
+    if(!st || st.status === 'pending') return '–';
+    if(st.status === 'partial') return 'Parcial';
+    return st.url ? `<a href="${st.url}" target="_blank" rel="noopener">✓ Ver</a>` : '✓';
+  };
+
+  body.innerHTML = r.rows.map(row => {
+    const cells = ['cp1','cp2','cp3','cp4'].map(k => {
+      const st = row.data[k];
+      return `<td class="${statusClass(st ? st.status : 'pending')}">${statusText(st)}</td>`;
+    }).join('');
+    const fecha = row.lastUpdated ? new Date(row.lastUpdated).toLocaleString('es-CO') : '';
+    return `<tr><td>${escapeHtml(row.nombre)}</td><td>${escapeHtml(row.codigo)}</td>${cells}<td>${fecha}</td></tr>`;
+  }).join('');
+  loadingEl.textContent = `${r.rows.length} estudiante(s) cargado(s).`;
+  table.style.display = 'table';
+}
+
+function exportCSV(){
+  if(allStudentsCache.length === 0){
+    alert('Primero carga el listado de estudiantes.');
+    return;
+  }
+  const statusWord = (st) => {
+    if(!st || st.status === 'pending') return 'Pendiente';
+    if(st.status === 'partial') return 'Parcial (falta captura)';
+    return 'Enviado';
+  };
+  let csv = 'Nombre,Codigo,CP1_Inscripcion,CP2_Estrategia,CP3_SegundoCorte,CP4_InformeFinal,Ultima_actualizacion\n';
+  allStudentsCache.forEach(row=>{
+    const cells = ['cp1','cp2','cp3','cp4'].map(k => statusWord(row.data[k]));
+    const fecha = row.lastUpdated ? new Date(row.lastUpdated).toLocaleString('es-CO') : '';
+    const line = [
+      `"${(row.nombre||'').replace(/"/g,'""')}"`,
+      `"${(row.codigo||'').replace(/"/g,'""')}"`,
+      ...cells,
+      `"${fecha}"`
+    ];
+    csv += line.join(',') + '\n';
+  });
+  const blob = new Blob(["\uFEFF" + csv], {type:'text/csv;charset=utf-8;'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = `bonos_checkpoints_${new Date().toISOString().slice(0,10)}.csv`;
+  document.body.appendChild(a); a.click(); document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+
+loadConfigAndRender();
+</script>
+</body>
+</html>
